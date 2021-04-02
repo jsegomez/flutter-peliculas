@@ -10,7 +10,6 @@ class CardSwipper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 320,
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
           return ClipRRect(
@@ -23,8 +22,8 @@ class CardSwipper extends StatelessWidget {
           );
         },
         itemCount: peliculas.length,
-        itemHeight: 320,
-        itemWidth: 210,
+        itemHeight: 300,
+        itemWidth: 200,
         layout: SwiperLayout.STACK,
       ),
     );

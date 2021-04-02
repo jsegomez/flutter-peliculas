@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peliculas_v2/models/Pelicula.dart';
 import 'package:peliculas_v2/services/peliculas_service.dart';
 import 'package:peliculas_v2/widgets/CardSwipper.dart';
+import 'package:peliculas_v2/widgets/ListMovies.dart';
 
 class HomePage extends StatelessWidget {
   final peliculasService = new PeliculasService();
@@ -32,17 +33,15 @@ class HomePage extends StatelessWidget {
   // Body de la aplicación
   Container _customBody(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
-    print(_screenSize.height);
-    final peliculas = this.peliculasService.getEncines();
+    final enCines = this.peliculasService.getEncines();
+
     return Container(
       padding: EdgeInsets.only(top: 25),
       width: double.infinity,
       height: double.infinity,
       color: Colors.blueGrey[800],
       child: Column(
-        children: [
-          nowPlaying(peliculas, _screenSize),
-        ],
+        children: [nowPlaying(enCines, _screenSize), getPopulares()],
       ),
     );
   }
@@ -62,6 +61,26 @@ class HomePage extends StatelessWidget {
           );
         }
       },
+    );
+  }
+
+  Widget getPopulares() {
+    peliculasService.getPopulares();
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
+      margin: EdgeInsets.only(top: 20.0),
+      width: double.infinity,
+      height: 190.0,
+      child: StreamBuilder(
+        stream: peliculasService.popularesStream,
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            return ListMovies(peliculas: snapshot.data);
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }
