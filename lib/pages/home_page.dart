@@ -32,25 +32,28 @@ class HomePage extends StatelessWidget {
 
   // Body de la aplicación
   Container _customBody(BuildContext context) {
-    final _screenSize = MediaQuery.of(context).size;
-    final enCines = this.peliculasService.getEncines();
-
     return Container(
-      padding: EdgeInsets.only(top: 25),
-      width: double.infinity,
-      height: double.infinity,
       color: Colors.blueGrey[800],
-      child: Column(
-        children: [nowPlaying(enCines, _screenSize), getPopulares()],
+      child: ListView(
+        children: [
+          nowPlaying(context),
+          getPopulares(),
+          getTopRated(),
+          getUpComing(),
+          SizedBox(
+            height: 15.0,
+          )
+        ],
       ),
     );
   }
 
   // Muestra las peliculas en cines
-  FutureBuilder<List<Pelicula>> nowPlaying(
-      Future<List<Pelicula>> peliculas, Size _screenSize) {
+  FutureBuilder<List<Pelicula>> nowPlaying(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
+    final enCines = this.peliculasService.getEncines();
     return FutureBuilder(
-      future: peliculas,
+      future: enCines,
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.hasData) {
           return CardSwipper(peliculas: snapshot.data);
@@ -66,21 +69,28 @@ class HomePage extends StatelessWidget {
 
   Widget getPopulares() {
     peliculasService.getPopulares();
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5.0),
-      margin: EdgeInsets.only(top: 20.0),
-      width: double.infinity,
-      height: 190.0,
-      child: StreamBuilder(
-        stream: peliculasService.popularesStream,
-        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if (snapshot.hasData) {
-            return ListMovies(peliculas: snapshot.data);
-          } else {
-            return Container();
-          }
-        },
-      ),
+    Stream<List<Pelicula>> peliculas = peliculasService.popularesStream;
+    return ListMovies(
+      peliculas: peliculas,
+      title: 'Populares',
+    );
+  }
+
+  Widget getTopRated() {
+    peliculasService.getTopRated();
+    Stream<List<Pelicula>> peliculas = peliculasService.topRatedStream;
+    return ListMovies(
+      peliculas: peliculas,
+      title: 'Más votadas',
+    );
+  }
+
+  Widget getUpComing() {
+    peliculasService.getUpComing();
+    Stream<List<Pelicula>> peliculas = peliculasService.upComingStream;
+    return ListMovies(
+      peliculas: peliculas,
+      title: 'Próximamente',
     );
   }
 }

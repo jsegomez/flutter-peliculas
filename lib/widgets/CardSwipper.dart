@@ -9,6 +9,7 @@ class CardSwipper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(top: 15.0, bottom: 20.0),
       width: double.infinity,
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
